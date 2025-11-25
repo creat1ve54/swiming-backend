@@ -12,7 +12,7 @@ const app = express();
 
 const PORT = process.env.PORT || 5002;
 
-app.use(cors());
+app.use(cors({ origin: 'http://212.67.9.16:3000' }));
 app.use(express.json());
 app.use("/api", router);
 
