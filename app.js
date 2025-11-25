@@ -12,7 +12,15 @@ const app = express();
 
 const PORT = process.env.PORT || 5002;
 
-app.use(cors());
+const corsOptions = {
+  origin: 'http://212.67.9.16:3000', // Укажите точный адрес вашего фронтенда
+  credentials: true, // Если нужно передавать куки/аутентификацию
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/api", router);
 
