@@ -27,8 +27,8 @@ class AnyTeamProgramControll {
     });
 
     anyTeamProgramsOne.sportsmansId = [...anyTeamProgramsOne.sportsmansId, 0];
-    anyTeamProgramsOne.outOfCompetitions = [
-      ...anyTeamProgramsOne.outOfCompetitions,
+    anyTeamProgramsOne.reserve = [
+      ...anyTeamProgramsOne.reserve,
       false,
     ];
 
@@ -48,10 +48,10 @@ class AnyTeamProgramControll {
     newArray.splice(spotsmanIndex, 1);
     anyTeamPrograms.sportsmansId = newArray;
 
-    let newArrayoutOfCompetition = [...anyTeamPrograms.outOfCompetitions];
+    let newArrayoutOfCompetition = [...anyTeamPrograms.reserve];
 
     newArrayoutOfCompetition.splice(spotsmanIndex, 1);
-    anyTeamPrograms.outOfCompetitions = newArrayoutOfCompetition;
+    anyTeamPrograms.reserve = newArrayoutOfCompetition;
 
     await anyTeamPrograms.save();
     res.json("Спортсмен удален!");
@@ -293,13 +293,14 @@ class AnyTeamProgramControll {
       where: { id: anyTeamProgramsId },
     });
 
-    console.log(11111111111);
 
     anyTeamProgramsFind.sportsmansId = [...anyTeamProgramsFind.sportsmansId, 0];
-    anyTeamProgramsFind.outOfCompetitions = [
-      ...anyTeamProgramsFind.outOfCompetitions,
+    anyTeamProgramsFind.reserve = [
+      ...anyTeamProgramsFind.reserve,
       false,
     ];
+
+
 
     anyTeamProgramsFind.teamId = teamId;
     anyTeamProgramsFind.sportsmansId = [0];
@@ -343,7 +344,7 @@ class AnyTeamProgramControll {
       where: { id: anyTeamProgramsId },
     });
 
-    anyTeamProgramsFind.outOfCompetitions = checked;
+    anyTeamProgramsFind.reserve = checked;
 
     // if (!anyTeamProgramsFind.sportsmansId.includes(sportsmanId)) {
     // if (anyTeamProgramsFind.sportsmansId) {
@@ -371,14 +372,14 @@ class AnyTeamProgramControll {
       where: { id: anyTeamProgramsId },
     });
 
-    if (anyTeamProgramsFind.outOfCompetitions) {
-      let newArray = [...anyTeamProgramsFind.outOfCompetitions];
+    if (anyTeamProgramsFind.reserve) {
+      let newArray = [...anyTeamProgramsFind.reserve];
 
       newArray[index] = checked;
 
-      anyTeamProgramsFind.outOfCompetitions = newArray;
+      anyTeamProgramsFind.reserve = newArray;
     } else {
-      anyTeamProgramsFind.outOfCompetitions = [checked];
+      anyTeamProgramsFind.reserve = [checked];
     }
 
     await anyTeamProgramsFind.save();
