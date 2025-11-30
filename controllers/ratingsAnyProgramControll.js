@@ -297,14 +297,46 @@ class RatingsAnyProgramControll {
           })
         );
 
+        let mpScore;
+
+        switch (Number(groupId == 2 ? 1 : 2)) {
+          case 1:
+            try {
+              mpScore = await MPOne.findAll();
+            } catch (error) {
+              return res.json({ error: "Ошибка" });
+            }
+
+            break;
+
+          case 2:
+            try {
+              mpScore = await MPTwo.findAll();
+            } catch (error) {
+              return res.json({ error: "Ошибка" });
+            }
+            break;
+          default:
+            break;
+        }
+
         MPData.forEach(async (item) => {
-          item.scoresResultFinishThree = item.scoresResultFinishTwo;
+          let figuresSumm = 0;
+          item.anyTeamProgram.sportsmansId.forEach((id) => {
+            const findScore = mpScore.find(
+              (mpScoreItem) => mpScoreItem.sportsmanId == id
+            );
+
+            figuresSumm = findScore.scoresResultFinishThree;
+
+          });
+
+          item.scoresResultFinishFigures = figuresSumm;
+          item.scoresResultFinishThree =
+            figuresSumm + item.scoresResultFinishTwo;
 
           await item.save();
         });
-
-        // console.log(11111111);
-        // console.log(MPData);
 
         if (MPData[0] && !MPData[0].anyTeamProgramId) {
           await MPOne.destroy({ where: { id: MPData[0].id } });
@@ -388,6 +420,8 @@ class RatingsAnyProgramControll {
           default:
             break;
         }
+
+        console.log(11111111);
 
         MPData.forEach(async (item) => {
           const findScore = mpScore.find(
