@@ -346,6 +346,10 @@ const TournamentName= sequelize.define("tournamentName", {
   date: { type: DataTypes.STRING, defaultValue: "" },
 });
 
+const newTournament = await TournamentName.create({
+  name: "",
+  date: ""
+});
 
 
 
