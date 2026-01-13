@@ -1,6 +1,8 @@
 const Router = require("express");
 const router = new Router();
 
+const tournamentNameRouter = require("./tournamentNameRouter");
+
 const sportsmensRouter = require("./sportsmansRouter");
 const teamsRouter = require("./teamsRouter");
 const elementProgrammRouter = require("./elementProgrammRouter");
@@ -32,9 +34,9 @@ const mainAnyProgramRouter = require("./mainAnyProgramRouter");
 const mainAnyProgramBrigadeRouter = require("./mainAnyProgramBrigadeRouter");
 //произвольная программа
 const anyTeamProgramRouter = require("./anyTeamProgramRouter");
+
+
 router.use("/any-team-program", anyTeamProgramRouter);
-
-
 
 router.use("/sportsmans", sportsmensRouter);
 router.use("/teams", teamsRouter);
@@ -69,6 +71,7 @@ router.use("/list-any-program-referee", listRefereeAnyProgramRouter);
 router.use("/referees-any-program-brigades", refereesAnyProgramBrigadesRouter);
 router.use("/main-any-program", mainAnyProgramRouter);
 router.use("/main-brigade", mainAnyProgramBrigadeRouter);
+router.use("/tournament", tournamentNameRouter);
 // router.use("/referees-and-coaches", refereeRouter);
 
 

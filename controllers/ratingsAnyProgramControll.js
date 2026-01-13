@@ -320,20 +320,37 @@ class RatingsAnyProgramControll {
             break;
         }
 
+        // console.log(mpScore);
+        // console.log(22222222);
+
         MPData.forEach(async (item) => {
           let figuresSumm = 0;
           item.anyTeamProgram.sportsmansId.forEach((id) => {
+            console.log(id);
             const findScore = mpScore.find(
               (mpScoreItem) => mpScoreItem.sportsmanId == id
             );
 
             figuresSumm = findScore.scoresResultFinishThree;
 
+            console.log(findScore);
           });
+
+          // console.log(item);
+          // console.log(22222222);
+
+          // item.scoresResultFinishThree = item.scoresResultFinishTwo;
 
           item.scoresResultFinishFigures = figuresSumm;
           item.scoresResultFinishThree =
             figuresSumm + item.scoresResultFinishTwo;
+
+          //           const findScore = mpScore.find(
+          //   (mpScoreItem) => mpScoreItem.sportsmanId == item.sportsmanId
+          // );
+          // item.scoresResultFinishFigures = findScore.scoresResultFinishThree;
+          // item.scoresResultFinishThree =
+          //   findScore.scoresResultFinishThree + item.scoresResultFinishTwo;
 
           await item.save();
         });

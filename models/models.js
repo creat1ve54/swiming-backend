@@ -340,6 +340,14 @@ const MPOneScoreIpressionAnyProgram= sequelize.define("MPOneScoreIpressionAnyPro
   fine: { type: DataTypes.DOUBLE, defaultValue: 0.0 },
 });
 
+const TournamentName= sequelize.define("tournamentName", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING, defaultValue: "" },
+  date: { type: DataTypes.STRING, defaultValue: "" },
+});
+
+
+
 
 // AnyTeamProgram.hasMany(Sportsmans, { as: "sportsmansArray" });
 // Sportsmans.belongsTo(AnyTeamProgram);
@@ -633,5 +641,7 @@ module.exports = {
   //произвольная расчет оценок
   MPOneAnyProgram,
   MPOneScoreAnyProgram,
-  MPOneScoreIpressionAnyProgram
+  MPOneScoreIpressionAnyProgram,
+
+  TournamentName
 };
