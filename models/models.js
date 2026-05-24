@@ -39,13 +39,13 @@ const ElementsOfTechnicalPrograms = sequelize.define(
   {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     nameElementsProgram: { type: DataTypes.STRING, defaultValue: "" },
-    groupId: { type: DataTypes.INTEGER},
-  }
+    groupId: { type: DataTypes.INTEGER },
+  },
 );
 
 const ElementsProgram = sequelize.define("elementsProgram", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  groupId: { type: DataTypes.INTEGER},
+  groupId: { type: DataTypes.INTEGER },
   nameElementProgram: { type: DataTypes.STRING, defaultValue: "" },
   ratio: { type: DataTypes.DOUBLE, defaultValue: 0 },
 });
@@ -244,11 +244,11 @@ const MPFourScore = sequelize.define("MPFourScore", {
 //Произвольная программа команды
 const AnyTeamProgram = sequelize.define("anyTeamProgram", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  sportsmansId: {type: DataTypes.ARRAY(DataTypes.INTEGER), defaultValue: []},
-  outOfCompetitions: {type: DataTypes.BOOLEAN, defaultValue: false},
-  reserve: {type: DataTypes.ARRAY(DataTypes.BOOLEAN), defaultValue: []},
-  anyTeamProgram: { type: DataTypes.INTEGER},
-  anyTeamProgramYears: { type: DataTypes.INTEGER},
+  sportsmansId: { type: DataTypes.ARRAY(DataTypes.INTEGER), defaultValue: [] },
+  outOfCompetitions: { type: DataTypes.BOOLEAN, defaultValue: false },
+  reserve: { type: DataTypes.ARRAY(DataTypes.BOOLEAN), defaultValue: [] },
+  anyTeamProgram: { type: DataTypes.INTEGER },
+  anyTeamProgramYears: { type: DataTypes.INTEGER },
 });
 
 const BrigadeEl = sequelize.define("brigadeEl", {
@@ -267,20 +267,22 @@ const BrigadeSTC = sequelize.define("brigadeSTC", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
-
 const ListRefereeAnyProgram = sequelize.define("listRefereeAnyProgram", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   mainAnyProgramBrigadeId: { type: DataTypes.INTEGER },
 });
 
-const RefereesAnyProgramBrigades = sequelize.define("refereesAnyProgramBrigades", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  mainAnyProgramBrigadeId: { type: DataTypes.INTEGER },
-  brigadeElId: { type: DataTypes.INTEGER },
-  brigadeAlId: { type: DataTypes.INTEGER },
-  brigadeDTCId: { type: DataTypes.INTEGER },
-  brigadeSTCId: { type: DataTypes.INTEGER },
-});
+const RefereesAnyProgramBrigades = sequelize.define(
+  "refereesAnyProgramBrigades",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    mainAnyProgramBrigadeId: { type: DataTypes.INTEGER },
+    brigadeElId: { type: DataTypes.INTEGER },
+    brigadeAlId: { type: DataTypes.INTEGER },
+    brigadeDTCId: { type: DataTypes.INTEGER },
+    brigadeSTCId: { type: DataTypes.INTEGER },
+  },
+);
 
 const MainAnyProgramBrigade = sequelize.define("mainAnyProgramBrigade", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -290,9 +292,6 @@ const MainAnyProgram = sequelize.define("mainAnyProgram", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   requiredAnyProgramName: { type: DataTypes.STRING },
 });
-
-
-
 
 //Произвольная программа расчет оценок
 const MPOneAnyProgram = sequelize.define("MPOneAnyProgram", {
@@ -317,7 +316,7 @@ const MPOneAnyProgram = sequelize.define("MPOneAnyProgram", {
   // teamId: {type: DataTypes.INTEGER},
 });
 //Таблица спортсменов с оценками
-const MPOneScoreAnyProgram= sequelize.define("MPOneScoreAnyProgram", {
+const MPOneScoreAnyProgram = sequelize.define("MPOneScoreAnyProgram", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   disciplineId: { type: DataTypes.INTEGER },
   groupId: { type: DataTypes.INTEGER },
@@ -329,34 +328,38 @@ const MPOneScoreAnyProgram= sequelize.define("MPOneScoreAnyProgram", {
   fine: { type: DataTypes.DOUBLE, defaultValue: 0.0 },
 });
 
-const MPOneScoreIpressionAnyProgram= sequelize.define("MPOneScoreIpressionAnyProgram", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  disciplineId: { type: DataTypes.INTEGER },
-  groupId: { type: DataTypes.INTEGER },
-  //спортсмен
-  // elements
-  scores: { type: DataTypes.ARRAY(DataTypes.DOUBLE) },
-  scoresResult: { type: DataTypes.DOUBLE, defaultValue: 0.0 },
-  fine: { type: DataTypes.DOUBLE, defaultValue: 0.0 },
-});
+const MPOneScoreIpressionAnyProgram = sequelize.define(
+  "MPOneScoreIpressionAnyProgram",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    disciplineId: { type: DataTypes.INTEGER },
+    groupId: { type: DataTypes.INTEGER },
+    //спортсмен
+    // elements
+    scores: { type: DataTypes.ARRAY(DataTypes.DOUBLE) },
+    scoresResult: { type: DataTypes.DOUBLE, defaultValue: 0.0 },
+    fine: { type: DataTypes.DOUBLE, defaultValue: 0.0 },
+  },
+);
 
-const TournamentName= sequelize.define("tournamentName", {
+const TournamentName = sequelize.define("tournamentName", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, defaultValue: "" },
   date: { type: DataTypes.STRING, defaultValue: "" },
 });
 
-
+const Factoring = sequelize.define("factoring", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  disciplineId: { type: DataTypes.INTEGER },
+  groupId: { type: DataTypes.INTEGER },
+  ratio: { type: DataTypes.DOUBLE, defaultValue: 0.0 },
+});
 
 // AnyTeamProgram.hasMany(Sportsmans, { as: "sportsmansArray" });
 // Sportsmans.belongsTo(AnyTeamProgram);
 
 Teams.hasMany(AnyTeamProgram);
 AnyTeamProgram.belongsTo(Teams);
-
-
-
-
 
 Sportsmans.hasMany(MPOneScore);
 MPOneScore.belongsTo(Sportsmans);
@@ -460,7 +463,6 @@ MainProgram.belongsTo(MainBrigade);
 Referees.hasMany(RefereesBrigades);
 RefereesBrigades.belongsTo(Referees);
 
-
 BrigadeOne.hasMany(RefereesBrigades, { as: "refereesBrigades" });
 RefereesBrigades.belongsTo(BrigadeOne);
 
@@ -497,7 +499,9 @@ ListRefereeAnyProgram.belongsTo(DutiesOfJudges);
 Referees.hasMany(ListRefereeAnyProgram);
 ListRefereeAnyProgram.belongsTo(Referees);
 
-MainAnyProgramBrigade.hasMany(ListRefereeAnyProgram, { as: "listRefereeArray" });
+MainAnyProgramBrigade.hasMany(ListRefereeAnyProgram, {
+  as: "listRefereeArray",
+});
 ListRefereeAnyProgram.belongsTo(MainAnyProgramBrigade);
 
 BrigadeAl.hasMany(RefereesAnyProgramBrigades, { as: "refereesAnyBrigades" });
@@ -560,7 +564,9 @@ MPOneScoreAnyProgram.belongsTo(ElementsProgram);
 MPOneAnyProgram.hasMany(MPOneScoreAnyProgram, { as: "MPScoreAnyProgramArray" });
 MPOneScoreAnyProgram.belongsTo(MPOneAnyProgram);
 
-MPOneAnyProgram.hasMany(MPOneScoreIpressionAnyProgram, { as: "MPOneScoreIpressionAnyArray" });
+MPOneAnyProgram.hasMany(MPOneScoreIpressionAnyProgram, {
+  as: "MPOneScoreIpressionAnyArray",
+});
 MPOneScoreIpressionAnyProgram.belongsTo(MPOneAnyProgram);
 
 AnyTeamProgram.hasMany(MPOneScoreIpressionAnyProgram);
@@ -642,5 +648,6 @@ module.exports = {
   MPOneScoreAnyProgram,
   MPOneScoreIpressionAnyProgram,
 
-  TournamentName
+  TournamentName,
+  Factoring
 };

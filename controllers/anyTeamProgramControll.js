@@ -191,8 +191,6 @@ class AnyTeamProgramControll {
               },
             ],
           });
-          console.log(anyTeamPrograms[1]);
-          console.log(1111111111);
         } else {
           anyTeamPrograms = await AnyTeamProgram.findAll({
             where: {

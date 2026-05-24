@@ -9,20 +9,6 @@ const {
   MPOneAnyProgram,
   MPOneScoreAnyProgram,
   MPOneScoreIpressionAnyProgram,
-  // MPOne,
-  // MPTwo,
-  // MPThree,
-  // MPFour,
-  // MPOneScore,
-  // MPTwoScore,
-  // MPThreeScore,
-  // MPFourScore,
-  // SubgroupFigures,
-  // MainProgram,
-  // BrigadeOne,
-  // RefereesBrigades,
-  // Referees,
-  // MainAnyProgram,
 } = require("../models/models");
 
 let AnyProgramFunc = (nameId, anyProgramName) => {
@@ -39,7 +25,7 @@ let AnyProgramFunc = (nameId, anyProgramName) => {
     arrayDuo,
     arrayDuoMixed,
     arrayGroup,
-    arrayCombi
+    arrayCombi,
   );
 
   if (
@@ -76,6 +62,7 @@ class DrawAnyProgramControll {
     findDraw = await DrawAnyProgram.findOne({
       where: { groupId: draw.groupId, disciplineId: draw.disciplineId },
     });
+    1;
     let drawSave;
 
     if (draw.disciplineId != 1) {
@@ -97,7 +84,6 @@ class DrawAnyProgramControll {
       }
 
       console.log(findDraw);
-      
 
       const anyTeamPrograms = await AnyTeamProgram.findAll({
         where: {
@@ -121,16 +107,16 @@ class DrawAnyProgramControll {
                 where: { id: sportsmanId },
                 include: { model: Teams },
               });
-            })
+            }),
           );
 
           anyTeamProgram.dataValues.sportsmansArray = [...sportsmansArray];
           anyTeamProgram.sportsmansArray = [...sportsmansArray];
-        })
+        }),
       ).then(async () => {
         let arr = Array.from(
           { length: drawSave.teamsArray.length },
-          (_, index) => 0
+          (_, index) => 0,
         );
 
         if (drawSave.drawOne === null) {
@@ -237,16 +223,16 @@ class DrawAnyProgramControll {
                   where: { id: sportsmanId },
                   include: { model: Teams },
                 });
-              })
+              }),
             );
 
             anyTeamProgram.dataValues.sportsmansArray = [...sportsmansArray];
             anyTeamProgram.sportsmansArray = [...sportsmansArray];
-          })
+          }),
         ).then(async () => {
           let arr = Array.from(
             { length: draw.teamsArray.length },
-            (_, index) => 0
+            (_, index) => 0,
           );
 
           if (draw.drawOne === null) {
@@ -384,12 +370,12 @@ class DrawAnyProgramControll {
                 where: { id: sportsmanId },
                 include: { model: Teams },
               });
-            })
+            }),
           );
 
           anyTeamProgram.dataValues.sportsmansArray = [...sportsmansArray];
           anyTeamProgram.sportsmansArray = [...sportsmansArray];
-        })
+        }),
       );
 
       if (activeDraw == null) {
@@ -428,7 +414,7 @@ class DrawAnyProgramControll {
 
         let arr = Array.from(
           { length: draw.teamsArray.length },
-          (_, index) => 0
+          (_, index) => 0,
         );
 
         if (draw.drawOne === null) {
@@ -449,7 +435,6 @@ class DrawAnyProgramControll {
         },
         include: { model: Teams },
       });
-
 
       draw.dataValues.sportsmansArray = [];
       draw.sportsmansArray = [];
@@ -498,7 +483,7 @@ class DrawAnyProgramControll {
 
         let arr = Array.from(
           { length: draw.sportsmansArray.length },
-          (_, index) => 0
+          (_, index) => 0,
         );
 
         if (draw.drawOne === null) {
@@ -538,16 +523,33 @@ class DrawAnyProgramControll {
     if (disciplineId != 1) {
       const anyTeamPrograms = await AnyTeamProgram.findAll({
         where: { anyTeamProgram: disciplineId, anyTeamProgramYears: groupId },
+        include: { model: Teams },
       });
 
       draw.dataValues.teamsArray = [];
       draw.teamsArray = [];
 
       await Promise.all(
-        anyTeamPrograms.map((anyTeamProgram) => {
-          draw.dataValues.teamsArray.push(anyTeamProgram);
-          draw.teamsArray.push(anyTeamProgram);
-        })
+        anyTeamPrograms.map(async(anyTeamProgram) => {
+         
+            draw.dataValues.teamsArray.push(anyTeamProgram);
+            draw.teamsArray.push(anyTeamProgram);
+
+            anyTeamProgram.dataValues.sportsmansArray = [];
+            anyTeamProgram.sportsmansArray = [];
+
+            let sportsmansArray = await Promise.all(
+              anyTeamProgram.sportsmansId.map(async (sportsmanId) => {
+                return Sportsmans.findOne({
+                  where: { id: sportsmanId },
+                  include: { model: Teams },
+                });
+              }),
+            );
+
+            anyTeamProgram.dataValues.sportsmansArray = [...sportsmansArray];
+            anyTeamProgram.sportsmansArray = [...sportsmansArray];
+        }),
       );
 
       if (
@@ -564,6 +566,7 @@ class DrawAnyProgramControll {
     } else {
       const anyTeamPrograms = await AnyTeamProgram.findAll({
         where: { anyTeamProgram: disciplineId, anyTeamProgramYears: groupId },
+        include: { model: Teams },
       });
 
       draw.dataValues.sportsmansArray = [];
@@ -591,7 +594,7 @@ class DrawAnyProgramControll {
     }
 
     await draw.save();
-    res.json({ draw });
+    res.json({draw});
   }
 
   async activeDraw(req, res) {
@@ -634,12 +637,12 @@ class DrawAnyProgramControll {
                   where: { id: sportsmanId },
                   include: { model: Teams },
                 });
-              })
+              }),
             );
 
             anyTeamProgram.dataValues.sportsmansArray = [...sportsmansArray];
             anyTeamProgram.sportsmansArray = [...sportsmansArray];
-          })
+          }),
         );
       }
 
@@ -775,18 +778,36 @@ class DrawAnyProgramControll {
           disciplineId: 5,
           elemntsCount: 8,
         },
+
+        //переделать
+        {
+          groupId: 1,
+          disciplineId: 6,
+          elemntsCount: 8,
+        },
+        {
+          groupId: 1,
+          disciplineId: 7,
+          elemntsCount: 7,
+        },
+        {
+          groupId: 1,
+          disciplineId: 8,
+          elemntsCount: 9,
+        },
+        {
+          groupId: 1,
+          disciplineId: 9,
+          elemntsCount: 7,
+        },
       ];
 
+      console.log(groupId);
+      console.log(disciplineId);
+
       const MPOneScoreAnyProgramItem = MPOneScoreAnyProgramList.find(
-        (item) => item.groupId == groupId && item.disciplineId == disciplineId
+        (item) => item.groupId == groupId && item.disciplineId == disciplineId,
       );
-
-      console.log(1111111111);
-
-      console.log({ groupId, disciplineId });
-      console.log(MPOneScoreAnyProgramItem);
-
-      console.log(draw.teamsArray);
 
       for (let index = 0; index < draw.teamsArray.length; index++) {
         const oneAnyProgram = await MPOneAnyProgram.create({
@@ -795,6 +816,8 @@ class DrawAnyProgramControll {
           disciplineId: disciplineId,
           groupId: groupId,
         });
+
+        console.log(MPOneScoreAnyProgramItem);
 
         for (
           let indexCount = 0;
@@ -987,10 +1010,32 @@ class DrawAnyProgramControll {
           disciplineId: 5,
           elemntsCount: 8,
         },
+
+        //переделать
+        {
+          groupId: 1,
+          disciplineId: 6,
+          elemntsCount: 8,
+        },
+        {
+          groupId: 1,
+          disciplineId: 7,
+          elemntsCount: 7,
+        },
+        {
+          groupId: 1,
+          disciplineId: 8,
+          elemntsCount: 9,
+        },
+        {
+          groupId: 1,
+          disciplineId: 9,
+          elemntsCount: 7,
+        },
       ];
 
       const MPOneScoreAnyProgramItem = MPOneScoreAnyProgramList.find(
-        (item) => item.groupId == groupId && item.disciplineId == disciplineId
+        (item) => item.groupId == groupId && item.disciplineId == disciplineId,
       );
 
       for (let index = 0; index < draw.sportsmansArray.length; index++) {

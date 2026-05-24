@@ -23,6 +23,7 @@ const {
   AgeGroups,
   AgeSubgroup,
   Referees,
+  Factoring,
 } = require("../models/models");
 
 const MPDataScoreFunc = async (MPScore, changeRating) => {
@@ -108,7 +109,7 @@ const MPDataScoreFinalsFunc = async (
   TableName,
   TableNameImpression,
   groupId,
-  disciplineId
+  disciplineId,
 ) => {
   let MPData = await Table.findAll({
     where: {
@@ -153,28 +154,28 @@ const MPDataScoreFinalsFunc = async (
       (currentSum, currentNumber) => {
         return currentSum + currentNumber.fine;
       },
-      0
+      0,
     );
 
     const score = MPDataItem.MPScoreAnyProgramArray.reduce(
       (currentSum, currentNumber) => {
         return currentSum + currentNumber.scoresResult;
       },
-      0
+      0,
     );
 
     const finalDD = MPDataItem.MPScoreAnyProgramArray.reduce(
       (currentSum, currentNumber) => {
         return currentSum + currentNumber.DD;
       },
-      0
+      0,
     );
 
     const scoreImpression = MPDataItem.MPOneScoreIpressionAnyArray.reduce(
       (currentSum, currentNumber) => {
         return currentSum + currentNumber.scoresResult;
       },
-      0
+      0,
     );
 
     // let element = 1;
@@ -216,6 +217,19 @@ class RatingsAnyProgramControll {
     const { groupId, disciplineId } = req.query;
 
     let MPData;
+
+    let factoring = await Factoring.findOne({
+      where: {
+        groupId: groupId,
+        disciplineId: disciplineId,
+      },
+    });
+
+    let ratio = 1;
+
+    if (factoring && factoring.ratio != 0) {
+      ratio = factoring.ratio;
+    }
 
     try {
       if (disciplineId != 1) {
@@ -283,8 +297,8 @@ class RatingsAnyProgramControll {
                       },
                     ],
                   });
-                }
-              )
+                },
+              ),
             );
 
             // console.log(sportsmansArray);
@@ -294,7 +308,7 @@ class RatingsAnyProgramControll {
             ];
 
             MPDataItem.anyTeamProgram.sportsmansArray = [...sportsmansArray];
-          })
+          }),
         );
 
         let mpScore;
@@ -320,40 +334,44 @@ class RatingsAnyProgramControll {
             break;
         }
 
-        // console.log(mpScore);
-        // console.log(22222222);
+
+        
 
         MPData.forEach(async (item) => {
           let figuresSumm = 0;
-          item.anyTeamProgram.sportsmansId.forEach((id) => {
-            console.log(id);
-            const findScore = mpScore.find(
-              (mpScoreItem) => mpScoreItem.sportsmanId == id
-            );
+          let lengthSportsman = 0;
 
-            figuresSumm = findScore.scoresResultFinishThree;
+          item.anyTeamProgram.sportsmansId.forEach((id, index) => {
+          // console.log(333);
+          // console.log(item.anyTeamProgram.reserve[index]);
+            if (!item.anyTeamProgram.reserve[index]) {
+              const findScore = mpScore.find(
+                (mpScoreItem) => mpScoreItem.sportsmanId == id,
+              );
 
-            console.log(findScore);
+              figuresSumm += findScore?.scoresResultFinishThree;
+              lengthSportsman++;
+            } 
+            //else {
+              //reserve = true;
+            //}
           });
 
-          // console.log(item);
-          // console.log(22222222);
+          if(figuresSumm != 0) {
+            figuresSumm = (figuresSumm/lengthSportsman) * ratio
+          }
 
-          // item.scoresResultFinishThree = item.scoresResultFinishTwo;
+          
 
-          item.scoresResultFinishFigures = figuresSumm;
-          item.scoresResultFinishThree =
-            figuresSumm + item.scoresResultFinishTwo;
-
-          //           const findScore = mpScore.find(
-          //   (mpScoreItem) => mpScoreItem.sportsmanId == item.sportsmanId
-          // );
-          // item.scoresResultFinishFigures = findScore.scoresResultFinishThree;
-          // item.scoresResultFinishThree =
-          //   findScore.scoresResultFinishThree + item.scoresResultFinishTwo;
+          // if (!reserve) {
+            item.scoresResultFinishFigures = figuresSumm;
+            item.scoresResultFinishThree =
+              figuresSumm + item.scoresResultFinishTwo;
+          // }
 
           await item.save();
         });
+
 
         if (MPData[0] && !MPData[0].anyTeamProgramId) {
           await MPOne.destroy({ where: { id: MPData[0].id } });
@@ -415,6 +433,10 @@ class RatingsAnyProgramControll {
           ],
         });
 
+        // console.log(333);
+
+        // console.log(MPData);
+
         let mpScore;
 
         switch (Number(groupId == 2 ? 1 : 2)) {
@@ -438,15 +460,19 @@ class RatingsAnyProgramControll {
             break;
         }
 
-        console.log(11111111);
-
-        MPData.forEach(async (item) => {
+        MPData.forEach(async (item, index) => {
           const findScore = mpScore.find(
-            (mpScoreItem) => mpScoreItem.sportsmanId == item.sportsmanId
+            (mpScoreItem) => mpScoreItem.sportsmanId == item.sportsmanId,
           );
-          item.scoresResultFinishFigures = findScore.scoresResultFinishThree;
-          item.scoresResultFinishThree =
-            findScore.scoresResultFinishThree + item.scoresResultFinishTwo;
+
+          if (!item.sportsman.outOfCompetition) {
+            item.scoresResultFinishFigures =
+              findScore.scoresResultFinishThree * ratio;
+
+            item.scoresResultFinishThree =
+              findScore.scoresResultFinishThree * ratio +
+              item.scoresResultFinishTwo;
+          }
 
           await item.save();
         });
@@ -460,6 +486,7 @@ class RatingsAnyProgramControll {
       return res.json({ error: "Ошибка" });
     }
 
+    
     return res.json(MPData);
   }
 
@@ -529,7 +556,7 @@ class RatingsAnyProgramControll {
       MPOneScoreAnyProgram,
       MPOneScoreIpressionAnyProgram,
       groupId,
-      disciplineId
+      disciplineId,
     );
     return res.json("123");
   }
@@ -600,7 +627,7 @@ class RatingsAnyProgramControll {
       MPOneScoreAnyProgram,
       MPOneScoreIpressionAnyProgram,
       groupId,
-      disciplineId
+      disciplineId,
     );
 
     // switch (Number(nameId)) {
@@ -829,7 +856,7 @@ class RatingsAnyProgramControll {
       MPOneScoreAnyProgram,
       MPOneScoreIpressionAnyProgram,
       groupId,
-      disciplineId
+      disciplineId,
     );
 
     // switch (Number(nameId)) {
@@ -1038,7 +1065,7 @@ class RatingsAnyProgramControll {
       MPOneScoreAnyProgram,
       MPOneScoreIpressionAnyProgram,
       groupId,
-      disciplineId
+      disciplineId,
     );
 
     return res.json("123");
@@ -1103,7 +1130,7 @@ class RatingsAnyProgramControll {
       MPOneScoreAnyProgram,
       MPOneScoreIpressionAnyProgram,
       groupId,
-      disciplineId
+      disciplineId,
     );
 
     // switch (Number(nameId)) {
@@ -1316,7 +1343,7 @@ class RatingsAnyProgramControll {
       MPOneScoreAnyProgram,
       MPOneScoreIpressionAnyProgram,
       groupId,
-      disciplineId
+      disciplineId,
     );
 
     return res.json("123");

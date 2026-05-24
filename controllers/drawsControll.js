@@ -530,6 +530,7 @@ class DrawControll {
         where: { subgroupId: nameId },
         // include: { model: Figures },
       });
+      
 
       switch (nameId) {
         case 1:

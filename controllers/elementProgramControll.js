@@ -11,7 +11,12 @@ class ElementProgramControll {
     res.json(ementProgram);
   }
   async getElementProgram(req, res) {    
-    const { groupId, elementsOfTechnicalProgramId } = req.query;
+    const { groupId, elementsOfTechnicalProgramId, name } = req.query;
+
+    console.log(req.query);
+    
+    console.log(name);
+    
 
     const elementTechnical = await ElementsOfTechnicalPrograms.findAll({
       where: {
@@ -20,9 +25,15 @@ class ElementProgramControll {
       order: [["id", "ASC"]],
     })
 
+    let number = 1;
+
+    if(name == 'Техника') {
+      number = 5
+    }
+    
     const elementProgram = await ElementsProgram.findAll({
       order: [["createdAt", "ASC"]],
-      where: {elementsOfTechnicalProgramId: elementTechnical[elementsOfTechnicalProgramId - 1].id}
+      where: {elementsOfTechnicalProgramId: elementTechnical[elementsOfTechnicalProgramId - number].id}
     });
 
     
